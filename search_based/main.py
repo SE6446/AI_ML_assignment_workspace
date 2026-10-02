@@ -5,12 +5,12 @@ def tokenize(prompt:str)-> list[str]:
     return prompt.lower().split(" ")
 
 
-with open("positive.txt", "r") as f:
+with open("positive-words.txt", "r") as f:
     
     positive_words: list[str] = [i.strip("\n") for i in f.readlines()]
     f.close()
 
-with open("negative.txt", mode="r") as f:
+with open("negative-words.txt", mode="r") as f:
     negative_words:list[str] = [i.strip("\n") for i in f.readlines()]
     f.close()
 
