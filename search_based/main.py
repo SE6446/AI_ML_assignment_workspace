@@ -5,12 +5,12 @@ def tokenize(prompt:str)-> list[str]:
     return prompt.lower().split(" ")
 
 
-with open("positive-words.txt", "r") as f:
+with open("search_based/positive-words.txt", "r") as f:
     
     positive_words: list[str] = [i.strip("\n") for i in f.readlines()]
     f.close()
 
-with open("negative-words.txt", mode="r") as f:
+with open("search_based/negative-words.txt", mode="r") as f:
     negative_words:list[str] = [i.strip("\n") for i in f.readlines()]
     f.close()
 
@@ -28,10 +28,8 @@ def sentiment_search_naive(prompt:list[str])-> int:
         return 1
     elif sentiment < 0:
         return 0
-    else:
-        print("Error: The sentiment was fully neutral.")
 
-    return -1 #negative default
+    return 0 #negative default
 
 if __name__ == "__main__":
     prompts:list[str] = ["I hated this", "I love this", "This is sick", "this is bad"] # Put some test prompts in here
