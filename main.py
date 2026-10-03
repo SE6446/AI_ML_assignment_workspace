@@ -1,14 +1,13 @@
-from typing import Callable
-from tqdm import tqdm
-
-from argparse import ArgumentParser, Namespace
 import argparse
+from argparse import ArgumentParser, Namespace
+from typing import Callable
+import json
 
 from datasets import Dataset
+from tqdm import tqdm
 
-from search_based.main import sentiment_search_naive
+from search_based.main import *
 from search_based.main import tokenize as search_tokenize
-
 from shared.helper_function import get_dataset
 
 parser: ArgumentParser = ArgumentParser()
@@ -24,19 +23,24 @@ if args.skip_training and args.type == 'ml' and args.stored_model == "==SUPPRESS
     raise Exception("Cannot skip training of an ML model without a model file!")
 
 
-FUNC: Callable[..., int] | None = sentiment_search_naive if args.type == 'search' else None
+FUNC: Callable[..., int] | None = sentiment_greedy_search_with_negations if args.type == 'search' else None
 TOKENIZER: Callable[..., list[str]] | None = search_tokenize if args.type == 'search' else None
 
 def run(function, tokenizer, prompt):  # pyright: ignore[reportMissingParameterType, reportUnknownParameterType]
     return function(tokenizer(prompt))
 
 def test_accuracy(dataset:Dataset):
+    log = []
     correct = 0
     for i in tqdm(dataset):
-        y = run(FUNC, TOKENIZER, i['review_text'])
+        y, score = run(FUNC, TOKENIZER, i['review_text'])
         if y == i['class_index']-1:
             correct += 1
+        log.append({"text":i["review_text"],"y":y,"ground_truth":i["class_index"]-1, "pre-softmax":score})
     print(f"Accuracy: {correct/dataset.__len__()}\n{correct}/{dataset.__len__()}")
+    with open("log.json","w") as f:
+        f.write(json.dumps(log, indent=2))
+
 
 dataset = get_dataset(split="test[:500]")
 print("Downloaded data. Running test")
