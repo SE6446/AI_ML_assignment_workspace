@@ -25,7 +25,7 @@ NEGATE_WORDS = \
      "oughtn't", "shan't", "shouldn't", "uh-uh", "wasn't", "weren't",
      "without", "wont", "wouldnt", "won't", "wouldn't", "rarely", "seldom", "despite"]
 
-def sentiment_greedy_search_naive(prompt:list[str])-> int:
+def sentiment_greedy_search_naive(prompt:list[str])-> tuple[int,int]:
     sentiment:int = 0
     for word in prompt:
         if any(item in word for item in positive_words): # The GOOD words  :)
@@ -34,11 +34,11 @@ def sentiment_greedy_search_naive(prompt:list[str])-> int:
             sentiment -= 1
 
     if sentiment > 0:
-        return 1
+        return 1, sentiment
     elif sentiment < 0:
-        return 0
+        return 0, sentiment
 
-    return 0 #negative default
+    return 0, sentiment #negative default
 
 def sentiment_greedy_search_with_negations(prompt:list[str]) -> tuple[int, int]:
     sentiment:int = 0

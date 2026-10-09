@@ -23,7 +23,7 @@ if args.skip_training and args.type == 'ml' and args.stored_model == "==SUPPRESS
     raise Exception("Cannot skip training of an ML model without a model file!")
 
 
-FUNC: Callable[..., int] | None = sentiment_greedy_search_with_negations if args.type == 'search' else None
+FUNC: Callable[..., int] | None = sentiment_greedy_search_naive if args.type == 'search' else None
 TOKENIZER: Callable[..., list[str]] | None = search_tokenize if args.type == 'search' else None
 
 def run(function, tokenizer, prompt):  # pyright: ignore[reportMissingParameterType, reportUnknownParameterType]
@@ -42,7 +42,7 @@ def test_accuracy(dataset:Dataset):
         f.write(json.dumps(log, indent=2))
 
 
-dataset = get_dataset(split="test[:500]")
+dataset = get_dataset(split="test[:50000]")
 print("Downloaded data. Running test")
 
 test_accuracy(dataset)
