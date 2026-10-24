@@ -33,10 +33,10 @@ def test_accuracy(dataset:Dataset):
     log = []
     correct = 0
     for i in tqdm(dataset):
-        y, score = run(FUNC, TOKENIZER, i['review_text'])
+        y, score, history = run(FUNC, TOKENIZER, i['review_text'])
         if y == i['class_index']-1:
             correct += 1
-        log.append({"text":i["review_text"],"y":y,"ground_truth":i["class_index"]-1, "pre-softmax":score})
+        log.append({"text":i["review_text"],"y":y, "pre-softmax":score, "history": history,"ground_truth":i["class_index"]-1, "correct":y==i['class_index']-1})
     print(f"Accuracy: {correct/dataset.__len__()}\n{correct}/{dataset.__len__()}")
     with open("log.json","w") as f:
         f.write(json.dumps(log, indent=2))

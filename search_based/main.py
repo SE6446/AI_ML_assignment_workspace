@@ -40,15 +40,18 @@ def sentiment_greedy_search_naive(prompt:list[str])-> tuple[int,int]:
 
     return 0, sentiment #negative default
 
-def sentiment_greedy_search_with_negations(prompt:list[str]) -> tuple[int, int]:
+def sentiment_greedy_search_with_negations(prompt:list[str]) -> tuple[int, int, list[list[int|str]]]:
     sentiment:int = 0
+    sentiments:list[list[int|str]] = []
     negated = False
     for word in prompt:
         if any(item in word for item in positive_words): # The GOOD words  :)
             sentiment += 1 if not negated else -1
+            sentiments.append([1 if not negated else -1, word])
 
         elif any(item in word for item in negative_words): # The BAD words >:(
             sentiment -= 1 if not negated else -1 #what the fuck?
+            sentiments.append([-1 if not negated else 1, word])
 
         elif any(item in word for item in NEGATE_WORDS) and negated == False:
             negated = True
@@ -56,12 +59,12 @@ def sentiment_greedy_search_with_negations(prompt:list[str]) -> tuple[int, int]:
         negated = False
 
     if sentiment > 0:
-        return 1, sentiment
+        return 1, sentiment, sentiments
     else: # We swap the negative check with an else as they are analogus.
-        return 0, sentiment
+        return 0, sentiment, sentiments
 
 if __name__ == "__main__":
-    prompts:list[str] = ["I hated this", "I love this", "This is sick", "this is bad"] # Put some test prompts in here
+    prompts:list[str] = ["I hated this", "I love this", "This is sick", "this is bad", "I thought that \"Treasure Island\" was a very good"] # Put some test prompts in here
     for prompt in prompts:
         tokens = tokenize(prompt)
         print("Naive")
