@@ -1,6 +1,5 @@
-# ML Based Solution
-## Description
-[insert description]
+# ML_BASED
 
-## Instructions
-main.py will serve as the primary entry point for the code
+## Methods
+
+Decision trees or SVMs?
